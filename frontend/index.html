@@ -149,23 +149,23 @@
     <div class="container">
         <div class="profile-section">
             <div class="profile-info">
-                <img src="https://via.placeholder.com/50" alt="Profile Avatar" class="profile-avatar">
+                <img src="/api/placeholder/50/50" alt="Profile Avatar" class="profile-avatar">
                 <div>
-                    <div id="profile-name" class="profile-name"></div>
-                    <div id="profile-handle" class="profile-handle"></div>
+                    <div class="profile-name">John Doe</div>
+                    <div class="profile-handle">@johndoe</div>
                 </div>
             </div>
             <div class="profile-stats">
                 <div class="stat">
-                    <div id="tweet-count" class="stat-value"></div>
+                    <div class="stat-value">120</div>
                     <div class="stat-label">Tweets</div>
                 </div>
                 <div class="stat">
-                    <div id="following-count" class="stat-value"></div>
+                    <div class="stat-value">500</div>
                     <div class="stat-label">Following</div>
                 </div>
                 <div class="stat">
-                    <div id="followers-count" class="stat-value"></div>
+                    <div class="stat-value">1.5K</div>
                     <div class="stat-label">Followers</div>
                 </div>
             </div>
@@ -181,126 +181,76 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/@dfinity/agent/lib/index.js"></script>
     <script>
         const tweetInput = document.getElementById('tweet-input');
         const tweetButton = document.getElementById('tweet-button');
         const tweetList = document.getElementById('tweet-list');
         const charCount = document.querySelector('.char-count');
 
-        // Initialize the Internet Computer agent
-        const agent = new window.ic.HttpAgent();
-        const canisterId = 'YOUR_CANISTER_ID_HERE'; // Replace with your actual canister ID
-        const actor = window.ic.Actor.createActor(canisterId, {
-            agent,
-            interfaceFactory: ({ IDL }) => {
-                return IDL.Service({
-                    createTweet: IDL.Func([IDL.Text], [IDL.Record({
-                        id: IDL.Int,
-                        author: IDL.Text,
-                        handle: IDL.Text,
-                        content: IDL.Text,
-                        likes: IDL.Int,
-                        retweets: IDL.Int,
-                        comments: IDL.Int,
-                        timestamp: IDL.Int
-                    })], []),
-                    getTweets: IDL.Func([], [IDL.Vec(IDL.Record({
-                        id: IDL.Int,
-                        author: IDL.Text,
-                        handle: IDL.Text,
-                        content: IDL.Text,
-                        likes: IDL.Int,
-                        retweets: IDL.Int,
-                        comments: IDL.Int,
-                        timestamp: IDL.Int
-                    }))], ['query']),
-                    getProfile: IDL.Func([], [IDL.Record({
-                        name: IDL.Text,
-                        handle: IDL.Text,
-                        tweetCount: IDL.Int,
-                        following: IDL.Int,
-                        followers: IDL.Int
-                    })], ['query']),
-                    likeTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
-                    retweetTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
-                    commentTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
-                    deleteTweet: IDL.Func([IDL.Int], [IDL.Bool], [])
-                });
-            }
-        });
+        let tweets = [];
 
-        async function createTweet(content) {
-            try {
-                const tweet = await actor.createTweet(content);
-                renderTweets();
-                updateProfile();
-            } catch (error) {
-                console.error('Error creating tweet:', error);
-            }
+        function createTweet(content) {
+            const tweet = {
+                id: Date.now(),
+                author: 'John Doe',
+                handle: '@johndoe',
+                content: content,
+                likes: 0,
+                retweets: 0,
+                comments: 0,
+                timestamp: new Date().toLocaleString()
+            };
+            tweets.unshift(tweet);
+            renderTweets();
+            updateProfileStats();
         }
 
-        async function renderTweets() {
-            try {
-                const tweets = await actor.getTweets();
-                tweetList.innerHTML = '';
-                tweets.forEach(tweet => {
-                    const tweetElement = document.createElement('div');
-                    tweetElement.className = 'tweet';
-                    tweetElement.innerHTML = `
-                        <div class="tweet-author">${tweet.author} <span style="color: #657786;">${tweet.handle} · ${new Date(Number(tweet.timestamp) / 1000000).toLocaleString()}</span></div>
-                        <div class="tweet-content">${tweet.content}</div>
-                        <div class="tweet-actions">
-                            <span class="tweet-action comment-action" data-id="${tweet.id}">💬 <span>${tweet.comments}</span></span>
-                            <span class="tweet-action retweet-action" data-id="${tweet.id}">🔁 <span>${tweet.retweets}</span></span>
-                            <span class="tweet-action like-action" data-id="${tweet.id}">❤️ <span>${tweet.likes}</span></span>
-                            <span class="tweet-action delete-action" data-id="${tweet.id}">🗑️</span>
-                        </div>
-                    `;
-                    tweetList.appendChild(tweetElement);
-                });
+        function renderTweets() {
+            tweetList.innerHTML = '';
+            tweets.forEach(tweet => {
+                const tweetElement = document.createElement('div');
+                tweetElement.className = 'tweet';
+                tweetElement.innerHTML = `
+                    <div class="tweet-author">${tweet.author} <span style="color: #657786;">${tweet.handle} · ${tweet.timestamp}</span></div>
+                    <div class="tweet-content">${tweet.content}</div>
+                    <div class="tweet-actions">
+                        <span class="tweet-action comment-action" data-id="${tweet.id}">💬 <span>${tweet.comments}</span></span>
+                        <span class="tweet-action retweet-action" data-id="${tweet.id}">🔁 <span>${tweet.retweets}</span></span>
+                        <span class="tweet-action like-action" data-id="${tweet.id}">❤️ <span>${tweet.likes}</span></span>
+                        <span class="tweet-action delete-action" data-id="${tweet.id}">🗑️</span>
+                    </div>
+                `;
+                tweetList.appendChild(tweetElement);
+            });
 
-                // Add event listeners for tweet actions
-                document.querySelectorAll('.tweet-action').forEach(action => {
-                    action.addEventListener('click', handleTweetAction);
-                });
-            } catch (error) {
-                console.error('Error fetching tweets:', error);
-            }
+            // Add event listeners for tweet actions
+            document.querySelectorAll('.tweet-action').forEach(action => {
+                action.addEventListener('click', handleTweetAction);
+            });
         }
 
-        async function handleTweetAction(event) {
+        function handleTweetAction(event) {
             const action = event.currentTarget;
             const tweetId = parseInt(action.getAttribute('data-id'));
+            const tweet = tweets.find(t => t.id === tweetId);
             
-            try {
+            if (tweet) {
                 if (action.classList.contains('like-action')) {
-                    await actor.likeTweet(tweetId);
+                    tweet.likes++;
                 } else if (action.classList.contains('retweet-action')) {
-                    await actor.retweetTweet(tweetId);
+                    tweet.retweets++;
                 } else if (action.classList.contains('comment-action')) {
-                    await actor.commentTweet(tweetId);
+                    tweet.comments++;
                 } else if (action.classList.contains('delete-action')) {
-                    await actor.deleteTweet(tweetId);
+                    tweets = tweets.filter(t => t.id !== tweetId);
                 }
                 renderTweets();
-                updateProfile();
-            } catch (error) {
-                console.error('Error performing tweet action:', error);
+                updateProfileStats();
             }
         }
 
-        async function updateProfile() {
-            try {
-                const profile = await actor.getProfile();
-                document.getElementById('profile-name').textContent = profile.name;
-                document.getElementById('profile-handle').textContent = profile.handle;
-                document.getElementById('tweet-count').textContent = profile.tweetCount;
-                document.getElementById('following-count').textContent = profile.following;
-                document.getElementById('followers-count').textContent = profile.followers;
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-            }
+        function updateProfileStats() {
+            document.querySelector('.profile-stats .stat-value').textContent = tweets.length;
         }
 
         tweetButton.addEventListener('click', () => {
@@ -318,9 +268,9 @@
             charCount.style.color = remainingChars < 20 ? 'red' : '#657786';
         });
 
-        // Initialize the app
-        updateProfile();
-        renderTweets();
+        // Initial tweets
+        createTweet("Welcome to the enhanced Twitter clone!");
+        createTweet("This version includes profile info, tweet actions, and more!");
     </script>
 </body>
 </html>
