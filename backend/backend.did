@@ -1,16 +1,28 @@
 type Tweet = 
  record {
+   author: text;
+   comments: int;
+   content: text;
    handle: text;
-   id: nat;
-   likes: nat;
-   retweets: nat;
-   "text": text;
+   id: int;
+   likes: int;
+   retweets: int;
    timestamp: int;
-   username: text;
+ };
+type Profile = 
+ record {
+   followers: int;
+   following: int;
+   handle: text;
+   name: text;
+   tweetCount: int;
  };
 service : {
-  createTweet: (text, text, text) -> (Tweet);
+  commentTweet: (int) -> (bool);
+  createTweet: (text) -> (Tweet);
+  deleteTweet: (int) -> (bool);
+  getProfile: () -> (Profile) query;
   getTweets: () -> (vec Tweet) query;
-  likeTweet: (nat) -> (bool);
-  retweetTweet: (nat) -> (bool);
+  likeTweet: (int) -> (bool);
+  retweetTweet: (int) -> (bool);
 }

@@ -3,31 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitter Clone</title>
+    <title>Enhanced Twitter Clone</title>
     <style>
+        :root {
+            --primary-color: #1da1f2;
+            --secondary-color: #14171a;
+            --background-color: #f5f8fa;
+            --border-color: #e1e8ed;
+        }
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f0f0;
+            background-color: var(--background-color);
+            color: var(--secondary-color);
         }
         .container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: white;
-            min-height: 100vh;
+            padding: 20px;
         }
         .header {
-            background-color: #1da1f2;
+            background-color: var(--primary-color);
             color: white;
+            padding: 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tweet-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .tweet-input {
+            width: 100%;
+            height: 100px;
+            resize: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .tweet-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
             padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            float: right;
+        }
+        .tweet-list {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        .tweet {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+        }
+        .tweet:last-child {
+            border-bottom: none;
+        }
+        .tweet-author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .tweet-content {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .tweet-actions {
             display: flex;
             justify-content: space-between;
+        }
+        .tweet-action {
+            color: #657786;
+            cursor: pointer;
+            display: flex;
             align-items: center;
         }
+        .tweet-action:hover {
+            color: var(--primary-color);
+        }
+        .tweet-action span {
+            margin-left: 5px;
+        }
+        .char-count {
+            float: left;
+            color: #657786;
+        }
         .profile-section {
+            background-color: white;
+            border-radius: 15px;
             padding: 20px;
-            border-bottom: 1px solid #e1e8ed;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
         }
         .profile-info {
             display: flex;
@@ -37,113 +115,78 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background-color: #ccc;
-            margin-right: 10px;
+            margin-right: 15px;
         }
-        .tweet-form {
-            padding: 20px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-        #tweet-input {
-            width: 100%;
-            height: 100px;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            resize: none;
-        }
-        #tweet-button {
-            background-color: #1da1f2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-        .tweet {
-            padding: 20px;
-            border-bottom: 1px solid #e1e8ed;
-        }
-        .tweet-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .tweet-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #ccc;
-            margin-right: 10px;
-        }
-        .tweet-username {
+        .profile-name {
             font-weight: bold;
+            font-size: 18px;
         }
-        .tweet-handle {
+        .profile-handle {
             color: #657786;
-            margin-left: 5px;
         }
-        .tweet-text {
-            margin-bottom: 10px;
-        }
-        .tweet-actions {
+        .profile-stats {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .stat-label {
             color: #657786;
-        }
-        .tweet-action {
-            cursor: pointer;
-        }
-        .tweet-action:hover {
-            color: #1da1f2;
-        }
-        .liked {
-            color: #e0245e;
-        }
-        .retweeted {
-            color: #17bf63;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Enhanced Twitter Clone</h1>
+    </div>
     <div class="container">
-        <div class="header">
-            <h1>Twitter Clone</h1>
-            <div id="current-user"></div>
-        </div>
         <div class="profile-section">
             <div class="profile-info">
-                <div class="profile-avatar"></div>
+                <img src="https://via.placeholder.com/50" alt="Profile Avatar" class="profile-avatar">
                 <div>
-                    <h2 id="profile-name"></h2>
-                    <p id="profile-handle"></p>
+                    <div id="profile-name" class="profile-name"></div>
+                    <div id="profile-handle" class="profile-handle"></div>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="stat">
+                    <div id="tweet-count" class="stat-value"></div>
+                    <div class="stat-label">Tweets</div>
+                </div>
+                <div class="stat">
+                    <div id="following-count" class="stat-value"></div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat">
+                    <div id="followers-count" class="stat-value"></div>
+                    <div class="stat-label">Followers</div>
                 </div>
             </div>
         </div>
         <div class="tweet-form">
-            <textarea id="tweet-input" placeholder="What's happening?"></textarea>
-            <button id="tweet-button">Tweet</button>
+            <textarea id="tweet-input" class="tweet-input" placeholder="What's happening?" maxlength="280"></textarea>
+            <div class="char-count">280</div>
+            <button id="tweet-button" class="tweet-button">Tweet</button>
+            <div style="clear: both;"></div>
         </div>
-        <div id="tweet-container"></div>
+        <div id="tweet-list" class="tweet-list">
+            <!-- Tweets will be added here dynamically -->
+        </div>
     </div>
 
     <script src="https://unpkg.com/@dfinity/agent/lib/index.js"></script>
     <script>
         const tweetInput = document.getElementById('tweet-input');
         const tweetButton = document.getElementById('tweet-button');
-        const tweetContainer = document.getElementById('tweet-container');
-        const currentUserElement = document.getElementById('current-user');
-        const profileName = document.getElementById('profile-name');
-        const profileHandle = document.getElementById('profile-handle');
-
-        let currentUser = {
-            name: 'John Doe',
-            handle: '@johndoe',
-            avatar: '👤'
-        };
-
-        let tweets = [];
+        const tweetList = document.getElementById('tweet-list');
+        const charCount = document.querySelector('.char-count');
 
         // Initialize the Internet Computer agent
         const agent = new window.ic.HttpAgent();
@@ -152,114 +195,132 @@
             agent,
             interfaceFactory: ({ IDL }) => {
                 return IDL.Service({
-                    createTweet: IDL.Func([IDL.Text, IDL.Text, IDL.Text], [IDL.Record({
-                        id: IDL.Nat,
-                        text: IDL.Text,
-                        username: IDL.Text,
+                    createTweet: IDL.Func([IDL.Text], [IDL.Record({
+                        id: IDL.Int,
+                        author: IDL.Text,
                         handle: IDL.Text,
-                        likes: IDL.Nat,
-                        retweets: IDL.Nat,
+                        content: IDL.Text,
+                        likes: IDL.Int,
+                        retweets: IDL.Int,
+                        comments: IDL.Int,
                         timestamp: IDL.Int
                     })], []),
                     getTweets: IDL.Func([], [IDL.Vec(IDL.Record({
-                        id: IDL.Nat,
-                        text: IDL.Text,
-                        username: IDL.Text,
+                        id: IDL.Int,
+                        author: IDL.Text,
                         handle: IDL.Text,
-                        likes: IDL.Nat,
-                        retweets: IDL.Nat,
+                        content: IDL.Text,
+                        likes: IDL.Int,
+                        retweets: IDL.Int,
+                        comments: IDL.Int,
                         timestamp: IDL.Int
                     }))], ['query']),
-                    likeTweet: IDL.Func([IDL.Nat], [IDL.Bool], []),
-                    retweetTweet: IDL.Func([IDL.Nat], [IDL.Bool], [])
+                    getProfile: IDL.Func([], [IDL.Record({
+                        name: IDL.Text,
+                        handle: IDL.Text,
+                        tweetCount: IDL.Int,
+                        following: IDL.Int,
+                        followers: IDL.Int
+                    })], ['query']),
+                    likeTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
+                    retweetTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
+                    commentTweet: IDL.Func([IDL.Int], [IDL.Bool], []),
+                    deleteTweet: IDL.Func([IDL.Int], [IDL.Bool], [])
                 });
             }
         });
 
-        function updateCurrentUser() {
-            currentUserElement.textContent = currentUser.name;
-            profileName.textContent = currentUser.name;
-            profileHandle.textContent = currentUser.handle;
-        }
-
-        async function createTweet(text) {
+        async function createTweet(content) {
             try {
-                const tweet = await actor.createTweet(text, currentUser.name, currentUser.handle);
-                tweets.unshift(tweet);
+                const tweet = await actor.createTweet(content);
                 renderTweets();
+                updateProfile();
             } catch (error) {
                 console.error('Error creating tweet:', error);
             }
         }
 
-        async function fetchTweets() {
+        async function renderTweets() {
             try {
-                tweets = await actor.getTweets();
-                renderTweets();
+                const tweets = await actor.getTweets();
+                tweetList.innerHTML = '';
+                tweets.forEach(tweet => {
+                    const tweetElement = document.createElement('div');
+                    tweetElement.className = 'tweet';
+                    tweetElement.innerHTML = `
+                        <div class="tweet-author">${tweet.author} <span style="color: #657786;">${tweet.handle} · ${new Date(Number(tweet.timestamp) / 1000000).toLocaleString()}</span></div>
+                        <div class="tweet-content">${tweet.content}</div>
+                        <div class="tweet-actions">
+                            <span class="tweet-action comment-action" data-id="${tweet.id}">💬 <span>${tweet.comments}</span></span>
+                            <span class="tweet-action retweet-action" data-id="${tweet.id}">🔁 <span>${tweet.retweets}</span></span>
+                            <span class="tweet-action like-action" data-id="${tweet.id}">❤️ <span>${tweet.likes}</span></span>
+                            <span class="tweet-action delete-action" data-id="${tweet.id}">🗑️</span>
+                        </div>
+                    `;
+                    tweetList.appendChild(tweetElement);
+                });
+
+                // Add event listeners for tweet actions
+                document.querySelectorAll('.tweet-action').forEach(action => {
+                    action.addEventListener('click', handleTweetAction);
+                });
             } catch (error) {
                 console.error('Error fetching tweets:', error);
             }
         }
 
-        function renderTweets() {
-            tweetContainer.innerHTML = '';
-            tweets.forEach(tweet => {
-                const tweetElement = document.createElement('div');
-                tweetElement.className = 'tweet';
-                tweetElement.innerHTML = `
-                    <div class="tweet-header">
-                        <div class="tweet-avatar">${currentUser.avatar}</div>
-                        <span class="tweet-username">${tweet.username}</span>
-                        <span class="tweet-handle">${tweet.handle}</span>
-                    </div>
-                    <div class="tweet-text">${tweet.text}</div>
-                    <div class="tweet-actions">
-                        <span class="tweet-action like" onclick="likeTweet(${tweet.id})">❤️ ${tweet.likes}</span>
-                        <span class="tweet-action retweet" onclick="retweetTweet(${tweet.id})">🔁 ${tweet.retweets}</span>
-                        <span class="tweet-action">${new Date(Number(tweet.timestamp) / 1000000).toLocaleString()}</span>
-                    </div>
-                `;
-                tweetContainer.appendChild(tweetElement);
-            });
-        }
-
-        async function likeTweet(id) {
+        async function handleTweetAction(event) {
+            const action = event.currentTarget;
+            const tweetId = parseInt(action.getAttribute('data-id'));
+            
             try {
-                await actor.likeTweet(id);
-                const tweet = tweets.find(t => t.id === id);
-                if (tweet) {
-                    tweet.likes += 1;
-                    renderTweets();
+                if (action.classList.contains('like-action')) {
+                    await actor.likeTweet(tweetId);
+                } else if (action.classList.contains('retweet-action')) {
+                    await actor.retweetTweet(tweetId);
+                } else if (action.classList.contains('comment-action')) {
+                    await actor.commentTweet(tweetId);
+                } else if (action.classList.contains('delete-action')) {
+                    await actor.deleteTweet(tweetId);
                 }
+                renderTweets();
+                updateProfile();
             } catch (error) {
-                console.error('Error liking tweet:', error);
+                console.error('Error performing tweet action:', error);
             }
         }
 
-        async function retweetTweet(id) {
+        async function updateProfile() {
             try {
-                await actor.retweetTweet(id);
-                const tweet = tweets.find(t => t.id === id);
-                if (tweet) {
-                    tweet.retweets += 1;
-                    renderTweets();
-                }
+                const profile = await actor.getProfile();
+                document.getElementById('profile-name').textContent = profile.name;
+                document.getElementById('profile-handle').textContent = profile.handle;
+                document.getElementById('tweet-count').textContent = profile.tweetCount;
+                document.getElementById('following-count').textContent = profile.following;
+                document.getElementById('followers-count').textContent = profile.followers;
             } catch (error) {
-                console.error('Error retweeting tweet:', error);
+                console.error('Error fetching profile:', error);
             }
         }
 
         tweetButton.addEventListener('click', () => {
-            const tweetText = tweetInput.value.trim();
-            if (tweetText) {
-                createTweet(tweetText);
+            const content = tweetInput.value.trim();
+            if (content) {
+                createTweet(content);
                 tweetInput.value = '';
+                charCount.textContent = '280';
             }
         });
 
+        tweetInput.addEventListener('input', () => {
+            const remainingChars = 280 - tweetInput.value.length;
+            charCount.textContent = remainingChars;
+            charCount.style.color = remainingChars < 20 ? 'red' : '#657786';
+        });
+
         // Initialize the app
-        updateCurrentUser();
-        fetchTweets();
+        updateProfile();
+        renderTweets();
     </script>
 </body>
 </html>

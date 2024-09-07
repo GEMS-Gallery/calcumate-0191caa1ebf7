@@ -2,17 +2,28 @@ import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 
+export interface Profile {
+  'name' : string,
+  'tweetCount' : bigint,
+  'handle' : string,
+  'followers' : bigint,
+  'following' : bigint,
+}
 export interface Tweet {
   'id' : bigint,
   'retweets' : bigint,
-  'username' : string,
-  'text' : string,
+  'content' : string,
+  'author' : string,
   'likes' : bigint,
   'timestamp' : bigint,
   'handle' : string,
+  'comments' : bigint,
 }
 export interface _SERVICE {
-  'createTweet' : ActorMethod<[string, string, string], Tweet>,
+  'commentTweet' : ActorMethod<[bigint], boolean>,
+  'createTweet' : ActorMethod<[string], Tweet>,
+  'deleteTweet' : ActorMethod<[bigint], boolean>,
+  'getProfile' : ActorMethod<[], Profile>,
   'getTweets' : ActorMethod<[], Array<Tweet>>,
   'likeTweet' : ActorMethod<[bigint], boolean>,
   'retweetTweet' : ActorMethod<[bigint], boolean>,
