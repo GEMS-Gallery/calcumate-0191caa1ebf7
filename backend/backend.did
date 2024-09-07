@@ -1,3 +1,16 @@
+type Tweet = 
+ record {
+   handle: text;
+   id: nat;
+   likes: nat;
+   retweets: nat;
+   "text": text;
+   timestamp: int;
+   username: text;
+ };
 service : {
-  calculate: (text, float64, float64) -> (float64);
+  createTweet: (text, text, text) -> (Tweet);
+  getTweets: () -> (vec Tweet) query;
+  likeTweet: (nat) -> (bool);
+  retweetTweet: (nat) -> (bool);
 }
